@@ -8,4 +8,6 @@ const firebaseConfig = {
   measurementId: "G-BVL1VJPYBL"
 };
 
-export const {apiKey} = firebaseConfig;
+export const signInEndpoint = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseConfig.apiKey}`;
+
+export const signUpEndpoint = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`;

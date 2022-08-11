@@ -3,17 +3,31 @@
     <div class="control-container">
         <input class="control" type="text" id="email" placeholder=" " formControlName="email" />
         <label class="label" for="email">Email</label>
-        <div class="error" *ngIf="false">Envalid email</div>
+        <div class="error"
+            *ngIf="authFormGroup.controls['email'].errors?.['required'] && authFormGroup.controls['email'].touched">
+            This field is required
+        </div>
+        <div class="error"
+            *ngIf="authFormGroup.controls['email'].errors?.['email'] && authFormGroup.controls['email'].touched">
+            Entered email is invalid
+        </div>
     </div>
     <div class="control-container">
-        <input class="control password" [type]="passwordInputType" id="password" placeholder=" "
-            formControlName="password" />
+        <input class="control" [type]="authFormGroup.value['passwordCheckbox'] ? 'text' : 'password'" id="password"
+            placeholder=" " formControlName="password" />
         <label class="label" for="password">Password</label>
-        <div class="error" *ngIf="false">Envalid password</div>
+        <div class="error"
+            *ngIf="authFormGroup.controls['password'].errors?.['required'] && authFormGroup.controls['password'].touched">
+            This field is required
+        </div>
+        <div class="error"
+            *ngIf="authFormGroup.controls['password'].errors?.['minlength'] && authFormGroup.controls['password'].touched">
+            Password should consist more than 6 symbols
+        </div>
     </div>
     <div class="checkbox-container">
         <input class="checkbox" type="checkbox" id="checkbox" [disabled]="isSubmitting"
-            (click)="onPasswordVisibilityChange()" />
+            formControlName="passwordCheckbox" />
         <label class="checkbox-label" for="checkbox">Show password</label>
     </div>
     <button class="button auth" [disabled]="isSubmitting" type="submit">Submit</button>
