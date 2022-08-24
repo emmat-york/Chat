@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AuthInterface } from './abstract/auth.abstract';
 import { HttpClient } from '@angular/common/http';
-import { AuthBodyPayload, SignInResponse, SignUpResponse, TokenData } from '../models/auth.model';
-import { signInEndpoint, signUpEndpoint } from '../database/firebase.database';
+import { AuthPayload, SignInResponse, SignUpResponse, TokenData } from '../models/auth.model';
+import { FIREBASE_DATA_BUCKET } from '../database/firebase.database';
 import { Observable, tap } from 'rxjs';
 
-const ID_TOKEN = "idToken";
-const EXPIRES_IN = "expiresIn";
+const { AUTH: { SIGN_IN, SIGN_UP, ID_TOKEN, EXPIRES_IN } } = FIREBASE_DATA_BUCKET;
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +13,15 @@ const EXPIRES_IN = "expiresIn";
 export class AuthService implements AuthInterface {
   constructor(private readonly http: HttpClient) { }
 
-  public signIn(authBodyPayload: AuthBodyPayload): Observable<SignInResponse> {
-    return this.http.post<SignInResponse>(signInEndpoint, authBodyPayload)
+  public signIn$(authPayload: AuthPayload): Observable<SignInResponse> {
+    return this.http.post<SignInResponse>(SIGN_IN, authPayload)
       .pipe(tap(({ idToken, expiresIn }) => {
         this.setToken({ idToken, expiresIn });
       }));
   }
 
-  public signUp(authBodyPayload: AuthBodyPayload): Observable<SignUpResponse> {
-    return this.http.post<SignUpResponse>(signUpEndpoint, authBodyPayload)
+  public signUp$(authPayload: AuthPayload): Observable<SignUpResponse> {
+    return this.http.post<SignUpResponse>(SIGN_UP, authPayload)
       .pipe(tap(({ idToken, expiresIn }) => {
         this.setToken({ idToken, expiresIn });
       }));

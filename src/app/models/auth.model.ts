@@ -1,6 +1,6 @@
 export type AuthPage = "Sign In" | "Sign Up";
 
-export interface AuthBodyPayload {
+export interface AuthPayload {
     email: string;
     password: string;
     returnSecureToken: boolean;
@@ -20,7 +20,7 @@ export interface SignUpResponse {
     email: string;
     refreshToken: string;
     expiresIn: string;
-    localId: string; // The uid of the newly created user.
+    localId: string;
 }
 
 export interface TokenData {

@@ -22,7 +22,7 @@
         </div>
         <div class="error"
             *ngIf="authFormGroup.controls['password'].errors?.['minlength'] && authFormGroup.controls['password'].touched">
-            Password should consist more than 6 symbols
+            Password should consist more then 6 symbols
         </div>
     </div>
     <div class="checkbox-container">
@@ -30,8 +30,8 @@
             formControlName="passwordCheckbox" />
         <label class="checkbox-label" for="checkbox">Show password</label>
     </div>
-    <button class="button auth" [disabled]="isSubmitting" type="submit">Submit</button>
-    <button class="button switch" [disabled]="isSubmitting" (click)="onChangeAuthPage($event)">
+    <button class="button submit" [disabled]="isSubmitting" type="submit">Submit</button>
+    <button class="button switch" [disabled]="isSubmitting" type="button" (click)="onChangeAuthPage()">
         {{ authPage === "Sign In" ? "Sign Up?" : "Sign In?" }}
     </button>
 </form>
