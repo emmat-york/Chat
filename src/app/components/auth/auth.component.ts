@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { take } from 'rxjs';
-import { AuthPage, AuthBodyPayload } from 'src/app/models/auth.model';
+import { Router } from '@angular/router';
+import { switchMap, take } from 'rxjs';
+import { AuthPage, AuthPayload } from 'src/app/models/auth.model';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-auth',
@@ -15,46 +17,75 @@ export class AuthComponent implements OnInit {
   public authFormGroup: FormGroup;
 
   constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
     private readonly formBuilder: FormBuilder,
-    private readonly authService: AuthService
+    private readonly router: Router
   ) { }
 
   public ngOnInit(): void {
     this.initializeAuthForm();
   }
 
-  public onChangeAuthPage(event: Event): void {
-    event.preventDefault();
+  public onChangeAuthPage(): void {
     this.authPage = this.authPage === "Sign In" ? "Sign Up" : "Sign In";
     this.authFormGroup.reset();
   }
 
   public onFormSubmit(): void {
-    this.isSubmitting = true;
     this.authFormGroup.markAllAsTouched();
 
     if (this.authFormGroup.invalid) {
       return;
     }
 
-    const authBodyPayload: AuthBodyPayload = {
+    this.isSubmitting = true;
+
+    const authPayload: AuthPayload = {
       ...this.authFormGroup.value,
       returnSecureToken: true
     };
 
     if (this.authPage === "Sign In") {
-      this.authService.signIn(authBodyPayload)
-      .pipe(take(1))
-      .subscribe(() => {
-        this.authFormGroup.reset();
-      });
+      this.onSignIn(authPayload);
     } else {
-      this.authService.signUp(authBodyPayload)
-      .pipe(take(1))
-      .subscribe(() => {
-        this.authFormGroup.reset();
-      });
+      this.onSignUp(authPayload);
     }
+  }
+
+  private onSignIn(authPayload: AuthPayload): void {
+    this.authService.signIn$(authPayload)
+      .pipe(
+        take(1),
+        switchMap(({ localId }) => {
+          return this.userService.getUser$(localId);
+        })
+      )
+      .subscribe((userState) => {
+        this.userService.userData$.next(userState);
+        this.router.navigate(["/chat"]);
+      });
+  }
+
+  private onSignUp(authPayload: AuthPayload): void {
+    this.authService.signUp$(authPayload)
+      .pipe(
+        take(1),
+        switchMap(({ localId, email }) => {
+          const initialUserState = {
+            isAdmin: false,
+            name: email,
+            email,
+            localId
+          };
+
+          return this.userService.setUser$(localId, initialUserState);
+        })
+      )
+      .subscribe((userState) => {
+        this.userService.userData$.next(userState);
+        this.router.navigate(["/chat"]);
+      });
   }
 
   private initializeAuthForm(): void {
