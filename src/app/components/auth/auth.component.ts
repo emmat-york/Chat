@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { catchError, EMPTY, finalize, Observable, switchMap } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable, switchMap, take } from 'rxjs';
 import { AuthPage, AuthPayload } from 'src/app/models/auth.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
@@ -59,6 +59,7 @@ export class AuthComponent implements OnInit {
   private onSignIn(authPayload: AuthPayload): void {
     this.authService.signIn$(authPayload)
       .pipe(
+        take(1),
         catchError((error: HttpErrorResponse) => {
           return this.errorHandle$(error);
         }),
@@ -77,6 +78,7 @@ export class AuthComponent implements OnInit {
   private onSignUp(authPayload: AuthPayload): void {
     this.authService.signUp$(authPayload)
       .pipe(
+        take(1),
         catchError((error: HttpErrorResponse) => {
           return this.errorHandle$(error);
         }),

@@ -3,7 +3,7 @@ import { AuthInterface } from './abstract/auth.abstract';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SignInErrors, AuthPage, AuthPayload, SignInResponse, SignUpResponse, TokenData, SignUpErrors } from '../models/auth.model';
 import { FIREBASE_DATA_BUCKET } from '../database/firebase.database';
-import { Observable, BehaviorSubject, take, tap } from 'rxjs';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 
 const { AUTH: { SIGN_IN, SIGN_UP, ID_TOKEN, EXPIRES_IN, ERRORS: { SIGN_IN_ERRORS, SIGN_UP_ERRORS } } } = FIREBASE_DATA_BUCKET;
 
@@ -18,7 +18,6 @@ export class AuthService implements AuthInterface {
   public signIn$(authPayload: AuthPayload): Observable<SignInResponse> {
     return this.http.post<SignInResponse>(SIGN_IN, authPayload)
       .pipe(
-        take(1),
         tap(({ idToken, expiresIn }) => {
           this.setToken({ idToken, expiresIn });
         }));
@@ -27,7 +26,6 @@ export class AuthService implements AuthInterface {
   public signUp$(authPayload: AuthPayload): Observable<SignUpResponse> {
     return this.http.post<SignUpResponse>(SIGN_UP, authPayload)
       .pipe(
-        take(1),
         tap(({ idToken, expiresIn }) => {
           this.setToken({ idToken, expiresIn });
         }));
