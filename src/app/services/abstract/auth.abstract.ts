@@ -7,7 +7,7 @@ export abstract class AuthInterface {
 
     public abstract signUp$(authPayload: AuthPayload): Observable<SignUpResponse>;
 
-    public abstract logOut(): void;
+    public abstract signOut(): void;
 
     public abstract getToken(): string;
 

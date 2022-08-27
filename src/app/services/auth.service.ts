@@ -4,6 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SignInErrors, AuthPage, AuthPayload, SignInResponse, SignUpResponse, TokenData, SignUpErrors } from '../models/auth.model';
 import { FIREBASE_DATA_BUCKET } from '../database/firebase.database';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 const { AUTH: { SIGN_IN, SIGN_UP, ID_TOKEN, EXPIRES_IN, ERRORS: { SIGN_IN_ERRORS, SIGN_UP_ERRORS } } } = FIREBASE_DATA_BUCKET;
 
@@ -13,7 +14,10 @@ const { AUTH: { SIGN_IN, SIGN_UP, ID_TOKEN, EXPIRES_IN, ERRORS: { SIGN_IN_ERRORS
 export class AuthService implements AuthInterface {
   public readonly authError$ = new BehaviorSubject<SignInErrors | SignUpErrors>(null);
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router
+  ) { }
 
   public signIn$(authPayload: AuthPayload): Observable<SignInResponse> {
     return this.http.post<SignInResponse>(SIGN_IN, authPayload)
@@ -31,7 +35,7 @@ export class AuthService implements AuthInterface {
         }));
   }
 
-  public logOut(): void {
+  public signOut(): void {
     this.setToken(null);
   }
 
@@ -40,7 +44,7 @@ export class AuthService implements AuthInterface {
     const expiresInTimestamp = new Date(localStorage.getItem(EXPIRES_IN));
 
     if (currentTimestamp > expiresInTimestamp) {
-      this.logOut();
+      this.signOut();
       return null;
     } else {
       return localStorage.getItem(ID_TOKEN);
@@ -56,8 +60,10 @@ export class AuthService implements AuthInterface {
 
       localStorage.setItem(ID_TOKEN, tokenData.idToken);
       localStorage.setItem(EXPIRES_IN, expiresInTimestamp.toString());
+      this.router.navigate(["/chat"]);
     } else {
       localStorage.clear();
+      this.router.navigate(["/auth"]);
     }
   }
 

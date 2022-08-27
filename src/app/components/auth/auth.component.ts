@@ -26,6 +26,11 @@ export class AuthComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
+    if (this.authService.getToken()) {
+      this.router.navigate(["/chat"]);
+      return;
+    }
+
     this.initializeAuthForm();
   }
 
@@ -104,7 +109,6 @@ export class AuthComponent implements OnInit {
   private onSuccessAuth(userState: UserState): void {
     this.userService.userData$.next(userState);
     this.authService.authError$.next(null);
-    this.router.navigate(["/chat"]);
   }
 
   private errorHandle$(error: HttpErrorResponse): Observable<never> {
