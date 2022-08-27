@@ -1,5 +1,9 @@
 export type AuthPage = "Sign In" | "Sign Up";
 
+export type SignInErrors = "EMAIL_NOT_FOUND" | "INVALID_PASSWORD" | "USER_DISABLED";
+
+export type SignUpErrors = "EMAIL_EXISTS" | "OPERATION_NOT_ALLOWED" | "TOO_MANY_ATTEMPTS_TRY_LATER";
+
 export interface AuthPayload {
     email: string;
     password: string;

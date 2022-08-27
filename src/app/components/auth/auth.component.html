@@ -1,5 +1,6 @@
 <form class="auth-form-group" [formGroup]="authFormGroup" (ngSubmit)="onFormSubmit()">
     <h1 class="auth-header">{{ authPage }}</h1>
+    <div class="error-response" *ngIf="(authService.authError$ | async) as error">{{ error }}</div>
     <div class="control-container">
         <input class="control" type="text" id="email" placeholder=" " formControlName="email" />
         <label class="label" for="email">Email</label>

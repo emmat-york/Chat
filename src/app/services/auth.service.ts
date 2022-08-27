@@ -1,30 +1,34 @@
 import { Injectable } from '@angular/core';
 import { AuthInterface } from './abstract/auth.abstract';
-import { HttpClient } from '@angular/common/http';
-import { AuthPayload, SignInResponse, SignUpResponse, TokenData } from '../models/auth.model';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { SignInErrors, AuthPage, AuthPayload, SignInResponse, SignUpResponse, TokenData, SignUpErrors } from '../models/auth.model';
 import { FIREBASE_DATA_BUCKET } from '../database/firebase.database';
-import { Observable, tap } from 'rxjs';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 
-const { AUTH: { SIGN_IN, SIGN_UP, ID_TOKEN, EXPIRES_IN } } = FIREBASE_DATA_BUCKET;
+const { AUTH: { SIGN_IN, SIGN_UP, ID_TOKEN, EXPIRES_IN, ERRORS: { SIGN_IN_ERRORS, SIGN_UP_ERRORS } } } = FIREBASE_DATA_BUCKET;
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService implements AuthInterface {
+  public readonly authError$ = new BehaviorSubject<SignInErrors | SignUpErrors>(null);
+
   constructor(private readonly http: HttpClient) { }
 
   public signIn$(authPayload: AuthPayload): Observable<SignInResponse> {
     return this.http.post<SignInResponse>(SIGN_IN, authPayload)
-      .pipe(tap(({ idToken, expiresIn }) => {
-        this.setToken({ idToken, expiresIn });
-      }));
+      .pipe(
+        tap(({ idToken, expiresIn }) => {
+          this.setToken({ idToken, expiresIn });
+        }));
   }
 
   public signUp$(authPayload: AuthPayload): Observable<SignUpResponse> {
     return this.http.post<SignUpResponse>(SIGN_UP, authPayload)
-      .pipe(tap(({ idToken, expiresIn }) => {
-        this.setToken({ idToken, expiresIn });
-      }));
+      .pipe(
+        tap(({ idToken, expiresIn }) => {
+          this.setToken({ idToken, expiresIn });
+        }));
   }
 
   public logOut(): void {
@@ -55,5 +59,17 @@ export class AuthService implements AuthInterface {
     } else {
       localStorage.clear();
     }
+  }
+
+  public handleAuthErrors(authPage: AuthPage, error: HttpErrorResponse): void {
+    let errorMessage: SignInErrors | SignUpErrors;
+
+    if (authPage === "Sign In") {
+      errorMessage = (SIGN_IN_ERRORS[error.error.error.message as SignInErrors]) as SignInErrors;
+    } else {
+      errorMessage = (SIGN_UP_ERRORS[error.error.error.message as SignUpErrors]) as SignUpErrors;
+    }
+
+    this.authError$.next(errorMessage);
   }
 }

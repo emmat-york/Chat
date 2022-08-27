@@ -19,6 +19,11 @@
             text-align: center;
         }
 
+        .error-response {
+            margin-bottom: 32px;
+            color: $error;
+        }
+
         .control-container {
             margin-bottom: 24px;
             display: flex;
