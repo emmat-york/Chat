@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent {
 
-  constructor() { }
+  constructor(private readonly authService: AuthService) { }
 
-  ngOnInit(): void {
+  public onSignOut(): void {
+    this.authService.signOut();
   }
-
 }

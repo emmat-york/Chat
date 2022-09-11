@@ -1,2 +1,38 @@
-<p>auth works!</p>
-<router-outlet></router-outlet>
+<form class="auth-form-group" [formGroup]="authFormGroup" (ngSubmit)="onFormSubmit()">
+    <h1 class="auth-header">{{ authPage }}</h1>
+    <div class="error-response" *ngIf="(authService.authError$ | async) as error">{{ error }}</div>
+    <div class="control-container">
+        <input class="control" type="text" id="email" placeholder=" " formControlName="email" />
+        <label class="label" for="email">Email</label>
+        <div class="error"
+            *ngIf="authFormGroup.controls['email'].errors?.['required'] && authFormGroup.controls['email'].touched">
+            {{ ERROR_MESSAGES.required }}
+        </div>
+        <div class="error"
+            *ngIf="authFormGroup.controls['email'].errors?.['email'] && authFormGroup.controls['email'].touched">
+            {{ ERROR_MESSAGES.email }}
+        </div>
+    </div>
+    <div class="control-container">
+        <input class="control" [type]="authFormGroup.value['passwordCheckbox'] ? 'text' : 'password'" id="password"
+            placeholder=" " formControlName="password" />
+        <label class="label" for="password">Password</label>
+        <div class="error"
+            *ngIf="authFormGroup.controls['password'].errors?.['required'] && authFormGroup.controls['password'].touched">
+            {{ ERROR_MESSAGES.required }}
+        </div>
+        <div class="error"
+            *ngIf="authFormGroup.controls['password'].errors?.['minlength'] && authFormGroup.controls['password'].touched">
+            {{ ERROR_MESSAGES.minLength }}
+        </div>
+    </div>
+    <div class="checkbox-container">
+        <input class="checkbox" type="checkbox" id="checkbox" [disabled]="isSubmitting"
+            formControlName="passwordCheckbox" />
+        <label class="checkbox-label" for="checkbox">Show password</label>
+    </div>
+    <button class="button submit" [disabled]="isSubmitting" type="submit">Submit</button>
+    <button class="button switch" [disabled]="isSubmitting" type="button" (click)="onChangeAuthPage()">
+        {{ authPage === "Sign In" ? "Sign Up?" : "Sign In?" }}
+    </button>
+</form>

@@ -1,0 +1,123 @@
+@import "../../styles/variables.scss";
+
+:host {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .auth-form-group {
+        width: 328px;
+        padding: 24px;
+        border: 1px solid $border_color;
+        border-radius: 16px;
+        box-shadow: 0 0 8px $border_color;
+        background-color: $white;
+
+        .auth-header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .error-response {
+            margin-bottom: 32px;
+            color: $error;
+        }
+
+        .control-container {
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+
+            .control {
+                position: relative;
+                padding: 12px 0;
+                border-bottom: 1.5px solid $border_color;
+
+                &:focus {
+                    border-bottom-color: $black;
+                }
+
+                &:focus~.label,
+                &:not(:placeholder-shown)~.label {
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: $black;
+                    transform: translateY(-16px);
+                    cursor: default;
+                }
+            }
+
+            .label {
+                position: absolute;
+                font-size: 16px;
+                font-weight: 400;
+                color: rgb(187, 187, 187);
+                transform: translate(0, 14px);
+                transition: .3s all;
+                cursor: inherit;
+            }
+
+            .error {
+                margin-top: 8px;
+                font-weight: 300;
+                color: $error;
+            }
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 32px;
+
+            .checkbox {
+                height: 18px;
+                width: 18px;
+                margin-right: 8px;
+                border: 1px solid $blue;
+                border-radius: 50%;
+
+                &:checked {
+                    border: none;
+                }
+            }
+
+            .checkbox-label {
+                color: $blue;
+                cursor: pointer;
+            }
+        }
+
+        .button {
+            padding: 8px 16px;
+            font-size: 16px;
+            transition: .3s all;
+
+            &.submit {
+                width: 100%;
+                margin-bottom: 8px;
+                border-radius: 8px;
+                color: $white;
+                background-color: $coral;
+
+                &:active {
+                    background-color: $dark-coral;
+                }
+            }
+
+            &.switch {
+                margin: 0 auto;
+                color: $blue;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            &:disabled {
+                opacity: $opacity;
+                cursor: not-allowed;
+            }
+        }
+    }
+}
