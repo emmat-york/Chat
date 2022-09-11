@@ -6,11 +6,11 @@
         <label class="label" for="email">Email</label>
         <div class="error"
             *ngIf="authFormGroup.controls['email'].errors?.['required'] && authFormGroup.controls['email'].touched">
-            This field is required
+            {{ ERROR_MESSAGES.required }}
         </div>
         <div class="error"
             *ngIf="authFormGroup.controls['email'].errors?.['email'] && authFormGroup.controls['email'].touched">
-            Entered email is invalid
+            {{ ERROR_MESSAGES.email }}
         </div>
     </div>
     <div class="control-container">
@@ -19,11 +19,11 @@
         <label class="label" for="password">Password</label>
         <div class="error"
             *ngIf="authFormGroup.controls['password'].errors?.['required'] && authFormGroup.controls['password'].touched">
-            This field is required
+            {{ ERROR_MESSAGES.required }}
         </div>
         <div class="error"
             *ngIf="authFormGroup.controls['password'].errors?.['minlength'] && authFormGroup.controls['password'].touched">
-            Password should consist more then 6 symbols
+            {{ ERROR_MESSAGES.minLength }}
         </div>
     </div>
     <div class="checkbox-container">

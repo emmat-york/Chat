@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, switchMap } from "rxjs";
-import { FIREBASE_DATA_BUCKET } from "../database/firebase.database";
-import { setUserResponse, UserState } from "../models/user.model";
-import { UserInterface } from "./abstract/user.abstract";
+import { FIREBASE_DATA_BUCKET } from "../../database/firebase.database";
+import { setUserResponse, UserState } from "../../models/user/user.model";
+import { UserInterface } from "./user.abstract";
 
 const { USERS_STORAGE: { URL } } = FIREBASE_DATA_BUCKET;
 

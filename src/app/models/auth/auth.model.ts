@@ -31,3 +31,9 @@ export interface TokenData {
     idToken: string;
     expiresIn: string;
 }
+
+export interface ErrorMessages {
+    required: string;
+    email: string;
+    minLength: string;
+}
