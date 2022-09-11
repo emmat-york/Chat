@@ -2,11 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { catchError, EMPTY, finalize, Observable, switchMap, take } from 'rxjs';
-import { AuthPage, AuthPayload } from 'src/app/models/auth.model';
-import { AuthService } from 'src/app/services/auth.service';
-import { UserService } from 'src/app/services/user.service';
+import { AuthPage, AuthPayload, ErrorMessages } from 'src/app/models/auth/auth.model';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { Router } from '@angular/router';
-import { UserState } from 'src/app/models/user.model';
+import { UserState } from 'src/app/models/user/user.model';
 
 @Component({
   selector: 'app-auth',
@@ -17,6 +17,11 @@ export class AuthComponent implements OnInit {
   public authPage: AuthPage = "Sign In";
   public isSubmitting: boolean;
   public authFormGroup: FormGroup;
+  public ERROR_MESSAGES: ErrorMessages = {
+    required: "This field is required",
+    email: "Entered email is invalid",
+    minLength: "Password should consist more then 6 symbols"
+  };
 
   constructor(
     public readonly authService: AuthService,
@@ -26,11 +31,6 @@ export class AuthComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-    if (this.authService.getToken()) {
-      this.router.navigate(["/chat"]);
-      return;
-    }
-
     this.initializeAuthForm();
   }
 
@@ -47,6 +47,7 @@ export class AuthComponent implements OnInit {
       return;
     }
 
+    this.authFormGroup.disable();
     this.isSubmitting = true;
 
     const authPayload: AuthPayload = {
@@ -73,6 +74,7 @@ export class AuthComponent implements OnInit {
         }),
         finalize(() => {
           this.isSubmitting = false;
+          this.authFormGroup.enable();
         })
       )
       .subscribe((userState) => {
@@ -99,6 +101,7 @@ export class AuthComponent implements OnInit {
         }),
         finalize(() => {
           this.isSubmitting = false;
+          this.authFormGroup.enable();
         })
       )
       .subscribe((userState) => {
@@ -120,7 +123,7 @@ export class AuthComponent implements OnInit {
     this.authFormGroup = this.formBuilder.group({
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required, Validators.minLength(6)]],
-      passwordCheckbox: [false]
+      passwordCheckbox: [null]
     });
   }
 }
